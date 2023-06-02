@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import com.progressoft.induction.atm.exceptions.AccountNotFoundException;
 
 public class BankingSystemImpl implements BankingSystem {
    Map<String, BigDecimal> accountBalanceMap = new HashMap<String, BigDecimal>();
@@ -25,20 +26,47 @@ public class BankingSystemImpl implements BankingSystem {
         accountBalanceMap.put("444444444", BigDecimal.valueOf(1000.0));
     }
 
-    public BigDecimal sumOfMoneyInAtm(){
+	public BigDecimal sumOfMoneyInAtm(){
         // Your code
-        return null;
+    	BigDecimal decimal=new BigDecimal(0);
+    	 for(Integer bnk:atmCashMap.values()) {
+	    	   decimal=BigDecimal.valueOf(bnk).add(decimal);
+	    	   
+	       }
+        return decimal;
     }
 
 
     @Override
     public BigDecimal getAccountBalance(String accountNumber){
-        //your code
-        return null;
+        //your code  
+    	if(isvalidaccount(accountNumber)) {
+    		throw new AccountNotFoundException("Account Not found"+accountNumber);
+    	}
+    	
+        return accountBalanceMap.get(accountNumber);
     }
 
     @Override
     public void debitAccount(String accountNumber, BigDecimal amount) {
         //your code
+    	if(isvalidaccount(accountNumber)) {
+    		throw new AccountNotFoundException("Account Not found"+accountNumber);
+    	}
+    	BigDecimal TotalAmountinAccount=getAccountBalance(accountNumber);
+    	int result= getAccountBalance(accountNumber).compareTo(amount);
+    	if(result>0) {
+    		
+    	}else if(result<0){
+    		
+    	}else {
+    		throw new InsufficientFundsException("Insufficent amount"+accountNumber);
+    	}
+    }
+    public Boolean isvalidaccount(String accountNumber) {
+    	if(!accountBalanceMap.containsKey(accountNumber)) {
+    		return true;
+    	}
+    	return false;
     }
 }
