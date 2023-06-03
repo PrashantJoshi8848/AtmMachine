@@ -28,12 +28,14 @@ public class BankingSystemImpl implements BankingSystem {
 
 	public BigDecimal sumOfMoneyInAtm(){
         // Your code
-    	BigDecimal decimal=new BigDecimal(0);
-    	 for(Integer bnk:atmCashMap.values()) {
-	    	   decimal=BigDecimal.valueOf(bnk).add(decimal);
-	    	   
-	       }
-        return decimal;
+		 BigDecimal totalMoneyInAtm = BigDecimal.ZERO;
+	        
+	        for (Map.Entry<Banknote, Integer> entry : atmCashMap.entrySet()) {
+	            BigDecimal bankValue = entry.getKey().getValue();
+	            int banknoteCount = entry.getValue();
+	            totalMoneyInAtm = totalMoneyInAtm.add(bankValue.multiply(BigDecimal.valueOf(banknoteCount)));
+	        }
+        return totalMoneyInAtm;
     }
 
 
@@ -53,16 +55,13 @@ public class BankingSystemImpl implements BankingSystem {
     	if(isvalidaccount(accountNumber)) {
     		throw new AccountNotFoundException("Account Not found"+accountNumber);
     	}
-    	BigDecimal TotalAmountinAccount=getAccountBalance(accountNumber);
-    	int result= getAccountBalance(accountNumber).compareTo(amount);
-    	if(result>0) {
-    		
-    	}else if(result<0){
-    		
-    	}else {
-    		throw new InsufficientFundsException("Insufficent amount"+accountNumber);
-    	}
+      	BigDecimal TotalAmountinAccount=getAccountBalance(accountNumber);
+    	if(getAccountBalance(accountNumber).signum()==0) {
+    		throw new InsufficientFundsException(accountNumber);   
+    		};
+    	
     }
+//    Check valid account or not
     public Boolean isvalidaccount(String accountNumber) {
     	if(!accountBalanceMap.containsKey(accountNumber)) {
     		return true;

@@ -15,28 +15,29 @@ public class ATMImpl extends BankingSystemImpl implements ATM {
     private final BankingSystemImpl bankingSystem=new BankingSystemImpl();
     @Override
     public List<Banknote> withdraw(String accountNumber, BigDecimal amount) {
+    	// Your code here
     	if(isvalidaccount(accountNumber)) {
     		throw new AccountNotFoundException("Account Not found"+accountNumber);
     	}
-        // Your code here
-    	int compareResultofAmtAndAtm=getAccountBalance(accountNumber).compareTo(amount);
-    	if(getAccountBalance(accountNumber).equals(BigDecimal.ZERO)) {
-    		throw new InsufficientFundsException(accountNumber);
-    	}
-    	if(compareResultofAmtAndAtm==0) {
-    		debitAccount(accountNumber, amount);
-    		
-    	}else if(compareResultofAmtAndAtm==1) {
-    			debitAccount(accountNumber, amount);
-    	}else {
+    	
+    	int compareResultofAccountAndamount=checkBalance(accountNumber).compareTo(amount);
+    	int comapreResultofAtmAndAmount=sumOfMoneyInAtm().compareTo(amount);   	   	
+    	
+    	
+    	if(compareResultofAccountAndamount<0) 
+    	{	
     		throw new InsufficientFundsException(accountNumber);
     		
+    	}else {    		
+    		if(comapreResultofAtmAndAmount<0){
+    			throw new NotEnoughMoneyInATMException(accountNumber);
+    		}
     	}
+    	
     	return null;
     }
 	@Override
 	public BigDecimal checkBalance(String accountNumber) {
-		// TODO Auto-generated method stub
 		return getAccountBalance(accountNumber);
 	}
 }
