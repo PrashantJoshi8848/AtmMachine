@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import com.progressoft.induction.atm.exceptions.AccountNotFoundException;
 
 public class BankingSystemImpl implements BankingSystem {
    Map<String, BigDecimal> accountBalanceMap = new HashMap<String, BigDecimal>();
@@ -25,20 +26,46 @@ public class BankingSystemImpl implements BankingSystem {
         accountBalanceMap.put("444444444", BigDecimal.valueOf(1000.0));
     }
 
-    public BigDecimal sumOfMoneyInAtm(){
+	public BigDecimal sumOfMoneyInAtm(){
         // Your code
-        return null;
+		 BigDecimal totalMoneyInAtm = BigDecimal.ZERO;
+	        
+	        for (Map.Entry<Banknote, Integer> entry : atmCashMap.entrySet()) {
+	            BigDecimal bankValue = entry.getKey().getValue();
+	            int banknoteCount = entry.getValue();
+	            totalMoneyInAtm = totalMoneyInAtm.add(bankValue.multiply(BigDecimal.valueOf(banknoteCount)));
+	        }
+        return totalMoneyInAtm;
     }
 
 
     @Override
     public BigDecimal getAccountBalance(String accountNumber){
-        //your code
-        return null;
+        //your code  
+    	if(isvalidaccount(accountNumber)) {
+    		throw new AccountNotFoundException("Account Not found"+accountNumber);
+    	}
+    	
+        return accountBalanceMap.get(accountNumber);
     }
 
     @Override
     public void debitAccount(String accountNumber, BigDecimal amount) {
         //your code
+    	if(isvalidaccount(accountNumber)) {
+    		throw new AccountNotFoundException("Account Not found"+accountNumber);
+    	}
+      	BigDecimal TotalAmountinAccount=getAccountBalance(accountNumber);
+    	if(getAccountBalance(accountNumber).signum()==0) {
+    		throw new InsufficientFundsException(accountNumber);   
+    		};
+    	
+    }
+//    Check valid account or not
+    public Boolean isvalidaccount(String accountNumber) {
+    	if(!accountBalanceMap.containsKey(accountNumber)) {
+    		return true;
+    	}
+    	return false;
     }
 }

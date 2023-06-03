@@ -12,7 +12,7 @@ import java.util.List;
 
 class ATMTest {
 
-    private ATM atm;
+    private ATMImpl atm;
 
     @BeforeEach
     void setUp() {
